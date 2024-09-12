@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Access environment variables
-# api_key = os.getenv(' ')
+api_key = os.getenv('OPENAI_API_KEY')
 
 
 llm = OpenAI(model="gpt-3.5-turbo", openai_api_key=api_key)
