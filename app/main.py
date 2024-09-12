@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException , UploadFile, File    #create server
-from PyPDF2 import PdfReader                                      #read pdf
+from fastapi import FastAPI, HTTPException , UploadFile, File, Form
+from PyPDF2 import PdfReader
 from .langchain_model import extract_answer
 from . import schemas
 
@@ -11,24 +11,24 @@ def extract_text_from_pdf(pdf_file) -> str:
     try:
         reader = PdfReader(pdf_file)
         pdf_text = ""
-        for page in reader.pages:
-            pdf_text += page.extract_text()
+        # for page in reader.pages:
+        #     pdf_text += page.extract_text()
+        pdf_text += reader.pages[0].extract_text()
         return pdf_text
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading PDF: {str(e)}")
 
 
-@app.get('/get')
-def get_data_from_pdf():
-    return (extract_text_from_pdf())
+# @app.get('/get')
+# def get_data_from_pdf():
+#     return (extract_text_from_pdf())
 
 
 @app.post("/extract-answer/")
-async def extract_answer_from_pdf( qa_request: schemas.QARequest,file: UploadFile = File(...)):
+async def extract_answer_from_pdf( file: UploadFile = File(...), question: str = Form(...)):
     pdf_text = extract_text_from_pdf(file.file)
-    answer = extract_answer(pdf_text, qa_request.question)
-    return {"question": qa_request.question, "answer": answer}
-
+    answer = extract_answer(pdf_text, question)
+    return {"question": question, "answer": answer}
 
 
 @app.post("/upload-pdf/")

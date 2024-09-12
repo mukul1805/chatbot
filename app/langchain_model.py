@@ -23,4 +23,4 @@ prompt = PromptTemplate(input_variables=["text", "question"], template=template)
 
 def extract_answer(text: str, question: str) -> str:
     prompt_text = prompt.format(text=text, question=question)
-    return llm(prompt_text)
+    return llm.invoke(prompt_text)
