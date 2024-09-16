@@ -3,12 +3,9 @@ from langchain_openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from the .env file
 load_dotenv()
 
-# Access environment variables
 api_key = os.getenv('OPENAI_API_KEY')
-
 
 llm = OpenAI(model="gpt-3.5-turbo", openai_api_key=api_key)
 

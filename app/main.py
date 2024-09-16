@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException , UploadFile, File, Form
 from PyPDF2 import PdfReader
 from .langchain_model import extract_answer
+from .gemini_model import extract_answer_with_gemini
 from . import schemas
 
 app=FastAPI()
@@ -36,3 +37,11 @@ async def upload_pdf(file: UploadFile = File(...)):
     # Extract text from the uploaded PDF
     pdf_text = extract_text_from_pdf(file.file)
     return {"pdf_text": pdf_text}
+
+
+
+@app.post ("/extract_from_gemini")
+async def extract_answer_using_gemini( file: UploadFile = File(...) , question: str = Form(...) ):
+    pdf_text = extract_text_from_pdf(file.file)
+    answer = extract_answer_with_gemini(pdf_text, question)
+    return {"question": question, "answer": answer}
