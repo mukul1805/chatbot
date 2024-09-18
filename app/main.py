@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException , UploadFile, File, Form
+from fastapi import FastAPI, Request, HTTPException , UploadFile, File, Form
 from PyPDF2 import PdfReader
 from .langchain_model import extract_answer
 from .gemini_model import extract_answer_with_gemini
+from .tavily_model import search_result_using_tavily
 
 app=FastAPI()
 
@@ -43,3 +44,27 @@ async def extract_answer_using_gemini( my_file: UploadFile = File(...) , questio
     pdf_text = extract_text_from_pdf(my_file.file)
     answer = extract_answer_with_gemini(pdf_text, question)
     return {"question": question, "answer": answer}
+
+
+@app.post("/search_with_tavily/{query}")
+async def search_using_tavily(query: str):
+    try:
+        print("Inside API Call before fn call")
+        response = search_result_using_tavily(query)
+        print("Inside API Call after fn call")
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}")
+
+
+
+# @app.post("/search_with_tavily")
+# async def search_using_tavily(query: str):
+#     try:
+#         print("Inside API Call before fn call")
+#         response = search_result_using_tavily(query)
+#         print("Inside API Call after fn call")
+#         return response
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error: {e}")
+
