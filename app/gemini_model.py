@@ -13,7 +13,7 @@ def extract_answer_with_gemini(text: str, question: str) -> str:
 
     try:
         response = model.generate_content(prompt_text)
-        answer = response.text.split("Answer: ")[-1].strip()
+        answer = response.text
         return answer
     except Exception as e:
         raise Exception(f"Error using Gemini model: {str(e)}")
